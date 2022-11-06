@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vector</title>
+</head>
+<style>
+    #all{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    .canvas {
+        border: 2px solid black;
+    }
+
+    #control {
+        border: 2px solid red;
+    }
+
+    #control>div {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    #control input {
+        width: 90%;
+    }
+</style>
+<script type="module">
+    import Vector from "./vector.js"
+    import Ball from "./ball.js"
+
+    
+    //---------------example for in click----------------
+    const c1 = document.getElementById('c1');
+    const ctx1 = c1.getContext('2d');
+    const W = c1.clientWidth
+    const H = c1.clientHeight
+    const origin = [W / 2, H / 2]
+    let Balls1=[]
+    c1.addEventListener('click',(e)=>{
+        console.log(e);
+        let b = new Ball(5,new Vector(e.offsetX-W/2,-e.offsetY+H/2,'grey'),Vector.randomVector(W/20,H/20,'red'),new Vector(0,-1,'blue'))
+        Balls1.push(b)
+        b.drawDetail(ctx1)
+        //or b.draw(ctx1)
+    })
+    //---------------example for random ball----------------
+    const c2 = document.getElementById('c2');
+    const ctx2 = c2.getContext('2d');
+    let Balls2=[]
+    for (let i = 0; i < 10; i++) {
+        let b = Ball.randomBall(ctx2)
+        Balls2.push(b)
+        b.draw(ctx2)
+        //or b.drawDetail(ctx2)
+    }
+    //--------------example for controls--------------------
+    const c3 = document.getElementById('c3');
+    const ctx3 = c3.getContext('2d');
+    let b=new Ball()
+    b.controles(ctx3).forEach(c=>{
+        document.getElementById('control').appendChild(c)
+    })
+    b.draw(ctx3)
+    
+    function animate() {
+
+        ctx1.clearRect(0, 0, W, H);
+        Balls1.forEach(b => {
+            b.drawDetail(ctx1)
+        });
+
+        ctx2.clearRect(0, 0, W, H);
+        Balls2.forEach(b => {
+            b.draw(ctx2)
+        });
+        
+        ctx3.clearRect(0, 0, W, H);
+        b.draw(ctx3)
+        
+        setTimeout(() => {
+            window.requestAnimationFrame(animate);
+        }, 20);
+    }
+    // animate()
+    document.getElementById('start').addEventListener('click', () => {
+        window.requestAnimationFrame(animate);
+        document.getElementById('start').disabled = true
+    })
+</script>
+
+<body>
+    <div id="all">
+        <div>
+            <h1>click magic</h1>
+        <canvas id="c1" class="canvas" width="200" height="200"></canvas>
+    </div>
+    <div>
+        <h1>random balls</h1>
+        <canvas id="c2" class="canvas" width="200" height="200"></canvas>
+    </div>
+    <div>
+        <h1>Controles</h1>
+        <canvas id="c3" class="canvas" width="200" height="200"></canvas>
+        <div id="control"></div>
+    </div>
+</div>
+    <button id="start">Start</button>
+</body>
+
+</html>
