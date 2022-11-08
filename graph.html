@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vector</title>
+</head>
+<style>
+    #all {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .canvas {
+        border: 2px solid black;
+    }
+
+    #control {
+        border: 2px solid red;
+    }
+
+    #control>div {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    #control input {
+        width: 90%;
+    }
+</style>
+<script type="module">
+    import Phasor from './phasor.js'
+    import Vector from './vector.js'
+    import Graph from './graph.js'
+
+
+    //---------------example for on click----------------
+    const c1 = document.getElementById('c1');
+    const ctx1 = c1.getContext('2d');
+    const c2 = document.getElementById('c2');
+    const ctx2 = c2.getContext('2d');
+    const W = c1.clientWidth
+    const H = c1.clientHeight
+    const o=[W/2,H/2]
+    let p = new Phasor(140,0,5,'red')
+    let p1 = new Phasor(70,-90,2,'blue')
+    let p2= new Phasor(10,90,3,'green')
+    p.draw(ctx1,o)
+    p1.draw(ctx1,o)
+    p2.draw(ctx1,o)
+    let res = Vector.add(p.v,p1.v,p2.v)
+    res.draw(ctx1,o)
+    let g = new Graph('yellow')
+    g.draw(res.y,ctx2)
+    function animate() {
+        ctx1.clearRect(0, 0, W, H);
+        p.draw(ctx1,o)
+        p1.draw(ctx1,p.tip())
+        p2.draw(ctx1,p1.tip())
+        res = Vector.add(p.v,p1.v,p2.v)
+        res.draw(ctx1,o)
+        g.draw(res.mag()/10,ctx2)
+        setTimeout(() => {
+            window.requestAnimationFrame(animate);
+        }, 20);
+    }
+    // animate()
+    document.getElementById('start').addEventListener('click', () => {
+        window.requestAnimationFrame(animate);
+        document.getElementById('start').disabled = true
+    })
+</script>
+
+<body>
+    <div id="all">
+        <div>
+            <h1>Phasor</h1>
+            <canvas id="c1" class="canvas" width="300" height="300"></canvas>
+        </div>
+        <div>
+            <h1>Graph</h1>
+            <canvas id="c2" class="canvas" width="700" height="300"></canvas>
+        </div>
+    </div>
+    <button id="start">Start</button>
+</body>
+
+</html>

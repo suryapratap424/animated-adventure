@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pta na</title>
+    <style>
+        * {
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+</body>
+<script type="module">
+    import Vector from './vector.js'
+    import Ball from './ball.js'
+    const c = document.getElementById('canvas');
+    let W= c.width = window.innerWidth
+    let H =c.height = window.innerHeight
+    console.log(window.innerWidth);
+    const ctx = c.getContext('2d');
+    let Balls = []
+    for (let i = 0; i < 10; i++) {
+        let b = Ball.randomBall(ctx)
+        b.acc=new Vector()
+        Balls.push(b)
+        Ball.resist=1.01
+        b.drawDetail(ctx)
+    }
+    let Cpos
+    c.addEventListener('mousemove',e=>{
+        Cpos=new Vector(e.offsetX-W/2,-e.offsetY+H/2,'grey')
+        Ball.target=Cpos
+        // // for origin
+        Ball.target=new Vector() 
+
+    })
+    function animate() {
+        ctx.clearRect(0, 0, W, H);
+        Balls.forEach(b => {
+            // b.drawDetail(ctx)
+            b.draw(ctx)
+        });
+        setTimeout(() => {
+            window.requestAnimationFrame(animate);
+        }, 20);
+    }
+    window.requestAnimationFrame(animate);
+</script>
+
+</html>

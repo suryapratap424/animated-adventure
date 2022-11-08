@@ -20,6 +20,14 @@ class Vector {
     static mult(v,n) {
         return new Vector(v.x*n,v.y*n)
     }
+    mult(n){
+        this.x*=n
+        this.y*=n
+    }
+    setMag(n){
+        this.x = this.x*n/this.mag()
+        this.y = this.y*n/this.mag()
+    }
     tip() {
         return [this.x + this.a, this.y + this.b]
     }
@@ -43,13 +51,18 @@ class Vector {
         ctx.stroke();
     }
     add(v) {
-        // console.log(v);
         this.x += v.x
         this.y += v.y
     }
     sub(v) {
         this.x -= v.x
         this.y -= v.y
+    }
+    static subtract(v1,v2){
+        return new Vector(v1.x-v2.x,-v1.y+v2.y);
+    }
+    mag(){
+        return Math.sqrt(this.x*this.x+this.y*this.y)
     }
 }
 export default Vector
