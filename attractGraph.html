@@ -8,45 +8,50 @@
     <title>pta na</title>
     <style>
         * {
-            margin: 0px;
-            padding: 0%;
-            box-sizing: border-box;
+            margin: 0;
         }
-        #canvas{
+
+        #canvas {
             background-color: black;
-            overflow: hidden;
         }
     </style>
 </head>
 
 <body>
+    <input type="text" id="inp">
     <canvas id="canvas"></canvas>
 </body>
 <script type="module">
     import Vector from './vector.js'
     import Ball from './ball.js'
+    import Graph from './graph.js'
     const c = document.getElementById('canvas');
-    let W= c.width = window.innerWidth
-    let H =c.height = window.innerHeight
-    console.log(window.innerWidth);
+    let W = c.width = window.innerWidth
+    let H = c.height = window.innerHeight
+    // console.log(window.innerWidth);
     const ctx = c.getContext('2d');
     let Balls = []
-    for (let i = 0; i < 5; i++) {
-        let b = Ball.randomBall(ctx,'white')
-        b.acc=new Vector()
+    for (let i = 0; i < W; i++) {
+        let b = Ball.randomBall(ctx, 'white')
+        b.r=2
+        b.acc = new Vector()
+        // b.pos.color = 'yellow'
         Balls.push(b)
-        Ball.resist=1.01
-        b.drawDetail(ctx)
+        Ball.resist = 1.1
+        b.draw(ctx)
     }
-    // Balls[0].goto=[1,1]
-    let Cpos
-    c.addEventListener('mousemove',e=>{
-        Cpos=new Vector(e.offsetX-W/2,-e.offsetY+H/2,'grey')
-        Ball.target=Cpos
-        // Balls.forEach(b=>b.goto=new Vector())
-        // // for origin
-        // Ball.target=new Vector() 
-
+    // c.addEventListener('mousemove', e => {
+    //     Ball.target = new Vector()
+    // })
+    let Y = document.getElementById('inp')
+    // let g = new Graph('white')
+    Y.addEventListener('input', () => {
+        let n=10
+        let p = Graph.getPoints(ctx,Y.value,n)
+        for (let i = 0; i < Ball.count; i++) {
+            let j = Math.floor(i/n)
+            Balls[i].goto = new Vector(p[j][0],p[j][1])
+        }
     })
     function animate() {
         ctx.clearRect(0, 0, W, H);

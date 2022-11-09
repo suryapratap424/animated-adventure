@@ -1,29 +1,34 @@
 import Vector from "./vector.js";
 
 class Ball {
+  goto = NaN;
   static target = NaN;
   static resist = 1;
-  static randomBall(ctx) {
+  static count = 0;
+  static randomBall(ctx, c) {
     const W = ctx.canvas.clientWidth / 2;
     const H = ctx.canvas.clientHeight / 2;
     return new Ball(
       5,
       Vector.randomVector(W, H),
       Vector.randomVector(W / 20, H / 20),
-      Vector.randomVector(1, 1)
+      Vector.randomVector(1, 1),
+      c
     );
   }
   constructor(
     r = 5,
     pos = new Vector(),
     vel = new Vector(),
-    acc = new Vector()
+    acc = new Vector(),
+    c = "blue"
   ) {
     this.pos = pos;
     this.vel = vel;
     this.acc = acc;
     this.r = r;
-    // this.name = Ball.count++
+    this.color = c;
+    this.name = Ball.count++;
   }
   show(ctx) {
     let a = ctx.canvas.clientWidth / 2;
@@ -34,36 +39,63 @@ class Ball {
     this.acc.draw(ctx, this.pos.tip(), "", 10);
     ctx.stroke();
     ctx.beginPath();
+    ctx.fillStyle = this.color;
     ctx.arc(this.pos.x + a, this.pos.y + b, this.r, 0, Math.PI * 2, true);
     ctx.fill();
   }
   draw(ctx) {
-    let a = ctx.canvas.clientWidth / 2;
-    let b = ctx.canvas.clientHeight / 2;
-    let sidex = this.pos.x + a + this.r;
-    let sidey = this.pos.y + b + this.r;
     const W = ctx.canvas.clientWidth;
     const H = ctx.canvas.clientHeight;
-    if (sidex - 2 * this.r <= 0 || sidex > W)
-      this.vel.x = -this.vel.x - this.acc.x;
-    if (sidey - 2 * this.r <= 0 || sidey > H)
-      this.vel.y = -this.vel.y - this.acc.y;
+    let a = W / 2;
+    let b = H / 2;
+
+    if (this.pos.x > a*1.01 || this.goto[1] < -a*1.01) {
+      // this.pos.x = a;
+      this.pos.x = this.pos.x>0?a:-a;
+    }
+    if (this.pos.y > b*1.01 || this.pos.y < -b*1.01) {
+      this.pos.y = this.pos.y>0?b:-b;
+    }
+
     ctx.beginPath();
+    ctx.fillStyle = this.color;
     ctx.arc(this.pos.x + a, this.pos.y + b, this.r, 0, Math.PI * 2, true);
     ctx.fill();
     this.vel.add(this.acc);
     this.pos.add(this.vel);
-    if(Ball.target){
-      let r = Vector.subtract(Ball.target,this.pos)
-      let l = r.mag()
-      this.acc = r
-      this.acc.setMag(1)
+
+    let sidex = this.pos.x + a;
+    // let sidex = this.pos.x + a + this.r;
+    let sidey = this.pos.y + b;
+    // let sidey = this.pos.y + b + this.r;
+    if (sidex <= 0 || sidex > W)
+      this.vel.x = -this.vel.x - this.acc.x;
+    if (sidey <= 0 || sidey > H)
+      this.vel.y = -this.vel.y - this.acc.y;
+    // if (sidex - 2 * this.r <= 0 || sidex > W)
+    //   this.vel.x = -this.vel.x - this.acc.x;
+    // if (sidey - 2 * this.r <= 0 || sidey > H)
+    //   this.vel.y = -this.vel.y - this.acc.y;
+
+
+    if (Ball.target) {
+      let r = Vector.subtract(Ball.target, this.pos);
+      this.acc = r;
+      this.acc.setMag(1);
+      // let l = r.mag()
       // this.acc.setMag(1000/(l*l))
       // console.log(l);
       // console.log(this.target);
     }
-    if(Ball.resist>1){
-      this.vel.mult(1/Ball.resist)
+    if (Ball.resist > 1) {
+      if (this.vel.mag() > 1) {
+        this.vel.mult(1 / Ball.resist);
+      }
+    }
+    if (this.goto) {
+      let r = Vector.subtract(this.goto, this.pos);
+      this.acc = r;
+      this.acc.setMag(1);
     }
   }
   drawDetail(ctx) {
