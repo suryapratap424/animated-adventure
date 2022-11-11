@@ -12,14 +12,24 @@ class Graph {
     this.t++;
   }
   static getPoints(ctx, f, n) {
-    let W = ctx.canvas.clientWidth
-    let x 
-    let point=[]
-    for (x = -W/2; x < W/2; x+=n) {
-        let y=eval(f)
-        point.push([x,y])
+    let W = ctx.canvas.clientWidth;
+    let x;
+    let point = [];
+    for (x = -W / 2; x < W / 2; x += n) {
+      try {
+        let y = eval(f);
+        // console.log((isNaN(y)));
+
+        y= isNaN(y)?0:y
+        y= y==Infinity?0:y
+        y= typeof(y)==="number"?y:0
+        point.push([x, y]);
+      } catch (e) {
+        console.log(e);
+        point.push([x,0]);
+      }
     }
-    return point
+    return point;
   }
 }
 export default Graph;

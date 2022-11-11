@@ -50,7 +50,6 @@ class Ball {
     let b = H / 2;
 
     if (this.pos.x > a*1.01 || this.goto[1] < -a*1.01) {
-      // this.pos.x = a;
       this.pos.x = this.pos.x>0?a:-a;
     }
     if (this.pos.y > b*1.01 || this.pos.y < -b*1.01) {
