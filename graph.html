@@ -52,8 +52,9 @@
     p2.draw(ctx1,o)
     let res = Vector.add(p.v,p1.v,p2.v)
     res.draw(ctx1,o)
-    let g = new Graph('yellow')
-    g.draw(res.y,ctx2)
+    let g = new Graph(ctx2)
+    g.options.backgroundColor='red';
+    g.draw(ctx2,res.y)
     function animate() {
         ctx1.clearRect(0, 0, W, H);
         p.draw(ctx1,o)

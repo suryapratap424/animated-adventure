@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pta na</title>
+    <style>
+        * {
+            margin: 0;
+        }
+
+        #canvas {
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+</body>
+<script type="module">
+    import Graph from './graph.js'
+    const c = document.getElementById('canvas');
+    const ctx = c.getContext('2d');
+    c.width = window.innerWidth
+    c.height = window.innerHeight
+    // let options={
+    //     functionColor:"red",
+    //     axisColor : "blue",
+    //     backgroundColor:"black",
+    //     // showVals: true
+    // }
+    let g = new Graph(ctx)
+    // let g = new Graph(ctx,options)
+    g.drawAxis(ctx,10,10)
+    // g.drawAxis(ctx)
+    g.animatefunction(ctx,'x',1)
+    // g.drawfunction(ctx,'1')
+</script>
+
+</html>

@@ -1,9 +1,73 @@
 import Vector from "./vector.js";
-import Ball from "./ball.js";
 class Graph {
   t = 0;
-  constructor(c = "black") {
-    this.c = c;
+  xScale;
+  yScale;
+  options = {};
+  constructor(
+    ctx,
+    {
+      axisColor = "white",
+      functionColor = "red",
+      backgroundColor = "black",
+      showVals = false,
+    } = {}
+  ) {
+    let W = ctx.canvas.clientWidth;
+    let H = ctx.canvas.clientHeight;
+    this.options.axisColor = axisColor;
+    this.options.functionColor = functionColor;
+    this.options.backgroundColor = backgroundColor;
+    this.options.showVals = showVals;
+    this.origin = [W / 2, H / 2];
+    ctx.fillStyle = this.options.backgroundColor;
+    ctx.fillRect(0, 0, W, H);
+    // console.log(this.options);
+  }
+  drawAxis(ctx, x = 100, y = 100) {
+    let O = this.origin;
+    let [W, H] = O.map((a) => a * 2);
+    this.xScale = W / x;
+    this.yScale = H / y;
+    let A = this.options.axisColor;
+    new Vector(W / 2, 0, A).drawCut(ctx, O, this.xScale);
+    new Vector(-W / 2, 0, A).drawCut(ctx, O, this.xScale);
+    new Vector(0, H / 2, A).drawCut(ctx, O, this.yScale);
+    new Vector(0, -H / 2, A).drawCut(ctx, O, this.yScale);
+  }
+  drawfunction(ctx, f) {
+    let [W, H] = this.origin.map((a) => a * 2);
+    let max = W / (2 * this.xScale);
+    let x = -max;
+    // console.log(x, this.xScale);
+    while (x < max) {
+      let y = eval(f);
+      if (!isNaN(y) && typeof y === "number") {
+        let v = new Vector(0, y, this.options.functionColor);
+        v.MagOptions.is = this.options.showVals;
+        v.draw(ctx, [W / 2 + x * this.xScale, H / 2], this.yScale);
+      }
+      x++;
+    }
+  }
+  animatefunction(ctx, f, time = 50) {
+    let [W, H] = this.origin.map((a) => a * 2);
+    let x = -W / (2 * this.xScale);
+    time *= 1000; //coverting to miliseconds
+    let speed = time / (W / this.xScale);
+    let anime = setInterval(() => {
+      let y = eval(f);
+      if (!isNaN(y) && typeof y === "number") {
+        let v = new Vector(0, y, this.options.functionColor);
+        v.MagOptions.is = this.options.showVals;
+        v.draw(ctx, [W / 2 + x * this.xScale, H / 2], this.yScale);
+      }
+      x++;
+      if (x > W / (2 * this.xScale)) {
+        // console.log(speed * x * 2);
+        clearInterval(anime);
+      }
+    }, speed);
   }
   draw(ctx, f) {
     // this.t=ctx.canvas.clientWidth/2
@@ -18,15 +82,13 @@ class Graph {
     for (x = -W / 2; x < W / 2; x += n) {
       try {
         let y = eval(f);
-        // console.log((isNaN(y)));
-
-        y= isNaN(y)?0:y
-        y= y==Infinity?0:y
-        y= typeof(y)==="number"?y:0
+        y = isNaN(y) ? 0 : y;
+        y = y == Infinity ? 0 : y;
+        y = typeof y === "number" ? y : 0;
         point.push([x, y]);
       } catch (e) {
-        console.log(e);
-        point.push([x,0]);
+        // console.log(e);
+        point.push([x, 0]);
       }
     }
     return point;

@@ -1,8 +1,9 @@
 class Vector {
-    x = 0
-    y = 0
-    a = 0
-    b = 0
+    x = 0;
+    y = 0;
+    a = 0;
+    b = 0;
+    MagOptions={is:false,direction:'MID'};
     constructor(x=0, y=0, c='black') {
         this.x = x
         this.y = -y
@@ -31,15 +32,28 @@ class Vector {
     tip() {
         return [this.x + this.a, this.y + this.b]
     }
-    draw(ctx, [a, b], c, l = 1) {
+    draw(ctx, [a, b], l = 1) {
         this.a = a
         this.b = b
         ctx.beginPath();
         ctx.moveTo(this.a, this.b)
         ctx.strokeStyle = this.color
-        ctx.lineTo(this.x * l + this.a, this.y * l + this.b)
-        ctx.arc(this.x * l + this.a, this.y * l + this.b, 2, 0, Math.PI * 2, true);
+        ctx.fillStyle = this.color;
+        let [x,y]=[this.x * l + this.a, this.y * l + this.b]
+        ctx.lineTo(x,y)
+        ctx.arc(x,y, 2, 0, Math.PI * 2, true);
         ctx.stroke();
+        if(this.MagOptions.is)
+        ctx.fillText(this.mag().toFixed(2), x+2,y+2, 50);
+    }
+    drawCut(ctx, [a, b],scale=10){
+        let mag=this.mag()
+        this.setMag(scale)
+        this.draw(ctx, [a, b])
+        for (let i = 0; i < mag; i++) {
+            [a,b]=this.tip()
+            this.draw(ctx, [a, b])
+        }
     }
     drawDetail(ctx, [a, b]) {
         this.draw(ctx, [a, b])
