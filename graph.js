@@ -112,7 +112,7 @@ class ContinuousGraph extends Graph {
       if (!isNaN(y) && typeof y === "number") {
         let v = new Vector(0, y, this.options.functionColor);
         v.MagOptions.is = this.options.showVals;
-        v.draw(ctx, [W / 2 + X , H / 2], this.yScale);
+        v.drawPoint(ctx, [W / 2 + X , H / 2], this.yScale);
       }
       X++;
     }
@@ -126,7 +126,7 @@ class ContinuousGraph extends Graph {
       if (!isNaN(y) && typeof y === "number") {
         let v = new Vector(0, y, this.options.functionColor);
         v.MagOptions.is = this.options.showVals;
-        v.draw(ctx, [W / 2 + X, H / 2], this.yScale);
+        v.drawPoint(ctx, [W / 2 + X, H / 2], this.yScale);
       }
       X++;
       if (X > W/2) {

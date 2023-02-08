@@ -46,6 +46,15 @@ class Vector {
         if(this.MagOptions.is)
         ctx.fillText(this.mag().toFixed(2), x+2,y+2, 50);
     }
+    drawPoint(ctx, [a, b], l = 1){
+        this.a = a
+        this.b = b
+        ctx.fillStyle = this.color;
+        let [x,y]=[this.x * l + this.a, this.y * l + this.b]
+        ctx.fillRect(x,y, 2, 2);
+        if(this.MagOptions.is)
+        ctx.fillText(this.mag().toFixed(2), x+2,y+2, 50);
+    }
     drawCut(ctx, [a, b],scale=10){
         let mag=this.mag()
         this.setMag(scale)
