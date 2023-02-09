@@ -26,6 +26,10 @@ class Ball {
     this.pos = pos;
     this.vel = vel;
     this.acc = acc;
+    this.pos.mode = "arrow";
+    this.vel.mode = "arrow";
+    // this.vel.MagOptions.is=true
+    this.acc.mode = "arrow";
     this.r = r;
     this.color = c;
     this.name = Ball.count++;
@@ -35,8 +39,9 @@ class Ball {
     let b = ctx.canvas.clientHeight / 2;
     ctx.beginPath();
     this.pos.draw(ctx, [a, b]);
-    this.vel.draw(ctx, this.pos.tip(), "", 4);
-    this.acc.draw(ctx, this.pos.tip(), "", 10);
+    this.vel.draw(ctx, this.pos.tip(), 4);
+    console.log(this.vel);
+    this.acc.draw(ctx, this.pos.tip(), 10);
     ctx.stroke();
     ctx.beginPath();
     ctx.fillStyle = this.color;
@@ -48,12 +53,13 @@ class Ball {
     const H = ctx.canvas.clientHeight;
     let a = W / 2;
     let b = H / 2;
-
-    if (this.pos.x > a*1.01 || this.goto[1] < -a*1.01) {
-      this.pos.x = this.pos.x>0?a:-a;
-    }
-    if (this.pos.y > b*1.01 || this.pos.y < -b*1.01) {
-      this.pos.y = this.pos.y>0?b:-b;
+    if (Ball.resist > 1) {
+      if (this.pos.x > a * 1.01 || this.goto[1] < -a * 1.01) {
+        this.pos.x = this.pos.x > 0 ? a : -a;
+      }
+      if (this.pos.y > b * 1.01 || this.pos.y < -b * 1.01) {
+        this.pos.y = this.pos.y > 0 ? b : -b;
+      }
     }
 
     ctx.beginPath();
@@ -67,15 +73,12 @@ class Ball {
     // let sidex = this.pos.x + a + this.r;
     let sidey = this.pos.y + b;
     // let sidey = this.pos.y + b + this.r;
-    if (sidex <= 0 || sidex > W)
-      this.vel.x = -this.vel.x - this.acc.x;
-    if (sidey <= 0 || sidey > H)
-      this.vel.y = -this.vel.y - this.acc.y;
+    if (sidex <= 0 || sidex > W) this.vel.x = -this.vel.x - this.acc.x;
+    if (sidey <= 0 || sidey > H) this.vel.y = -this.vel.y - this.acc.y;
     // if (sidex - 2 * this.r <= 0 || sidex > W)
     //   this.vel.x = -this.vel.x - this.acc.x;
     // if (sidey - 2 * this.r <= 0 || sidey > H)
     //   this.vel.y = -this.vel.y - this.acc.y;
-
 
     if (Ball.target) {
       let r = Vector.subtract(Ball.target, this.pos);
