@@ -27,15 +27,28 @@ class Graph {
   drawAxis(ctx, x = 10, y = 10) {
     let O = this.origin;
     let [W, H] = O.map((a) => a * 2);
-    this.xScale = W / x;
-    this.yScale = H / y;
+    this.xScale = W / 2 / x;
+    this.yScale = H / 2 / y;
     let A = this.options.axisColor;
     new Vector(W / 2, 0, A).drawCut(ctx, O, this.xScale);
     new Vector(-W / 2, 0, A).drawCut(ctx, O, this.xScale);
     new Vector(0, H / 2, A).drawCut(ctx, O, this.yScale);
     new Vector(0, -H / 2, A).drawCut(ctx, O, this.yScale);
   }
-  clear(ctx){
+  drawGrid(ctx, x = 10, y = 10) {
+    let O = this.origin;
+    let [W, H] = O.map((a) => a * 2);
+    this.xScale = W / 2 / x;
+    this.yScale = H / 2 / y;
+    let A = this.options.axisColor;
+    for (let i = 0; i < W; i += this.xScale) {
+      new Vector(0, H, "#202124").draw(ctx, [i, H], this.xScale);
+    }
+    for (let i = 0; i < W; i += this.yScale) {
+      new Vector(W, 0, "#202124").draw(ctx, [0, i], this.yScale);
+    }
+  }
+  clear(ctx) {
     ctx.fillStyle = this.options.backgroundColor;
     ctx.fillRect(0, 0, ...this.origin.map((a) => a * 2));
   }
@@ -45,22 +58,24 @@ class Graph {
     this.v.draw(ctx, [this.t, ctx.canvas.clientHeight / 2]);
     this.t++;
   }
-  static getPoints(ctx, f, n) {
+  static getPoints(ctx, f, xScale, yScale) {
     let W = ctx.canvas.clientWidth;
-    let x;
+    let H = ctx.canvas.clientHeight;
     let point = [];
-    for (x = -W / 2; x < W / 2; x += n) {
+    for (let X = -W / 2; X < W / 2; X++) {
       try {
+        let x = (X * 2 * xScale) / W;
         let y = eval(f);
-        y = isNaN(y) ? 0 : y;
-        y = y == Infinity ? 0 : y;
-        y = typeof y === "number" ? y : 0;
-        point.push([x, y]);
+        if (!isNaN(y) && y != Infinity && typeof y === "number") {
+          point.push([X, (y * H) / 2 / yScale,'']);
+        } else{
+          point.push([X, 0,'error']);
+        }
       } catch (e) {
-        // console.log(e);
-        point.push([x, 0]);
+        point.push([X, 0,'error']);
       }
     }
+    // console.log(point);
     return point;
   }
 }
@@ -103,25 +118,11 @@ class DescreteGraph extends Graph {
 class ContinuousGraph extends Graph {
   drawfunction(ctx, f) {
     let [W, H] = this.origin.map((a) => a * 2);
-    let max = W/2;
+    let max = W / 2;
     let X = -max;
     // console.log(x, this.xScale);
     while (X < max) {
-      let x=X/this.xScale;
-      let y = eval(f);
-      if (!isNaN(y) && typeof y === "number") {
-        let v = new Vector(0, y, this.options.functionColor);
-        v.MagOptions.is = this.options.showVals;
-        v.drawPoint(ctx, [W / 2 + X , H / 2], this.yScale);
-      }
-      X++;
-    }
-  }
-  animatefunction(ctx, f) {
-    let [W, H] = this.origin.map((a) => a * 2);
-    let X = -W/2;
-    let anime = setInterval(() => {
-      let x=X/this.xScale;
+      let x = X / this.xScale;
       let y = eval(f);
       if (!isNaN(y) && typeof y === "number") {
         let v = new Vector(0, y, this.options.functionColor);
@@ -129,12 +130,26 @@ class ContinuousGraph extends Graph {
         v.drawPoint(ctx, [W / 2 + X, H / 2], this.yScale);
       }
       X++;
-      if (X > W/2) {
+    }
+  }
+  animatefunction(ctx, f) {
+    let [W, H] = this.origin.map((a) => a * 2);
+    let X = -W / 2;
+    let anime = setInterval(() => {
+      let x = X / this.xScale;
+      let y = eval(f);
+      if (!isNaN(y) && typeof y === "number") {
+        let v = new Vector(0, y, this.options.functionColor);
+        v.MagOptions.is = this.options.showVals;
+        v.drawPoint(ctx, [W / 2 + X, H / 2], this.yScale);
+      }
+      X++;
+      if (X > W / 2) {
         // console.log(speed * x * 2);
         clearInterval(anime);
       }
-    }, 5);
+    }, 1);
   }
 }
 
-export { Graph, DescreteGraph,ContinuousGraph };
+export { Graph, DescreteGraph, ContinuousGraph };

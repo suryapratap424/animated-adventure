@@ -19,36 +19,58 @@
 
 <body>
     <input type="text" id="inp">
+    <span>
+        <input type="range" name="" id="xA" value="10">
+        <label for="xA">X-axis</label>
+        <input type="range" name="" id="yA" value="10">
+        <label for="yA">Y-axis</label>
+        <button id="button">Resettel</button>
+    </span>
     <canvas id="canvas"></canvas>
 </body>
 <script type="module">
     import Vector from './vector.js'
     import Ball from './ball.js'
-    import {Graph} from './graph.js'
+    import { Graph } from './graph.js'
     const c = document.getElementById('canvas');
-    let W = c.width = window.innerWidth
-    let H = c.height = window.innerHeight
+    let W = c.width = window.innerWidth;
+    let H = c.height = window.innerHeight;
     const ctx = c.getContext('2d');
-    let Balls = []
+    let Balls = [];
+    let g = new Graph(ctx);
+    let [x, y] = [10, 10];
+    const xA = document.getElementById('xA');
+    const yA = document.getElementById('yA');
+    const b = document.getElementById('button');
+    b.addEventListener('click', () => {
+        Y.oninput()
+    })
+    let Y = document.getElementById('inp');
+    [xA, yA].forEach(e => {
+        e.addEventListener('input', () => {
+            [x, y] = [xA.value, yA.value]
+        })
+    })
+    g.drawGrid(ctx, x, y)
     for (let i = 0; i < W; i++) {
         let b = Ball.randomBall(ctx, 'white')
-        b.r=2
+        b.r = 2
         b.acc = new Vector()
         Balls.push(b)
         Ball.resist = 1.05
         b.draw(ctx)
     }
-    let Y = document.getElementById('inp')
-    Y.addEventListener('input', () => {
-        let n=10
-        let p = Graph.getPoints(ctx,Y.value,n)
+    Y.oninput = () => {
+        let p = Graph.getPoints(ctx, Y.value, x, y)
         for (let i = 0; i < Ball.count; i++) {
-            let j = Math.floor(i/n)
-            Balls[i].goto = new Vector(p[j][0],p[j][1])
+            p[i][2] == 'error' ? Balls[i].color = 'red' : Balls[i].color = 'lightgreen'
+            Balls[i].goto = new Vector(p[i][0], p[i][1])
         }
-    })
+    }
     function animate() {
         ctx.clearRect(0, 0, W, H);
+        g.drawGrid(ctx, x, y)
+        g.drawAxis(ctx, x, y)
         Balls.forEach(b => {
             b.draw(ctx)
         });

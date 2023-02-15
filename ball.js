@@ -40,7 +40,7 @@ class Ball {
     ctx.beginPath();
     this.pos.draw(ctx, [a, b]);
     this.vel.draw(ctx, this.pos.tip(), 4);
-    console.log(this.vel);
+    // console.log(this.vel);
     this.acc.draw(ctx, this.pos.tip(), 10);
     ctx.stroke();
     ctx.beginPath();
