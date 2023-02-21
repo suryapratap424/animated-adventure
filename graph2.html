@@ -99,6 +99,7 @@
             }
             // g = new DescreteGraph(ctx, options)
             g = new ContinuousGraph(ctx, options)
+            g.drawGrid(ctx, xA.value, yA.value)
             g.drawAxis(ctx, xA.value, yA.value)
             g.drawfunction(ctx, f.value ? f.value : '1')
         })
@@ -106,8 +107,8 @@
     document.getElementById('button').addEventListener('click', () => {
         // let g = new Graph(ctx,options)
         g.clear(ctx)
-        // g.drawAxis(ctx, xA.value, yA.value)
         g.drawGrid(ctx, xA.value, yA.value)
+        g.drawAxis(ctx, xA.value, yA.value)
         // g.drawAxis(ctx)
         // g.animatefunction(ctx,'x',1)
         // g.animatefunction(ctx,'Math.pow(2.71,-Math.abs(x*x))');
