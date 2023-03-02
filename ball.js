@@ -1,6 +1,6 @@
 import Vector from "./vector.js";
 
-class Ball {
+export default class Ball {
   goto = NaN;
   static target = NaN;
   static resist = 1;
@@ -179,4 +179,3 @@ class Ball {
     this.show(ctx);
   }
 }
-export default Ball;

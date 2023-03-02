@@ -41,7 +41,7 @@ function drawArrow(ctx, fromx, fromy, tox, toy, arrowWidth, color) {
   ctx.stroke();
   ctx.restore();
 }
-class Vector {
+export default class Vector {
   x = 0;
   y = 0;
   a = 0;
@@ -139,4 +139,3 @@ class Vector {
     return Math.sqrt(this.x * this.x + this.y * this.y);
   }
 }
-export default Vector;
