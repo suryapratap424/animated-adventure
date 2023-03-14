@@ -116,6 +116,7 @@ class DescreteGraph extends Graph {
   }
 }
 class ContinuousGraph extends Graph {
+  mode='point'
   drawfunction(ctx, f) {
     let [W, H] = this.origin.map((a) => a * 2);
     let max = W / 2;
@@ -126,8 +127,11 @@ class ContinuousGraph extends Graph {
       let y = eval(f);
       if (!isNaN(y) && typeof y === "number") {
         let v = new Vector(0, y, this.options.functionColor);
-        v.MagOptions.is = this.options.showVals;
-        v.drawPoint(ctx, [W / 2 + X, H / 2], this.yScale);
+        if(this.mode=='point'){
+          v.drawPoint(ctx, [W / 2 + X, H / 2], this.yScale);
+        }else if(this.mode=='fill'){
+          v.draw(ctx, [W / 2 + X, H / 2], this.yScale);
+        }
       }
       X++;
     }
@@ -140,8 +144,11 @@ class ContinuousGraph extends Graph {
       let y = eval(f);
       if (!isNaN(y) && typeof y === "number") {
         let v = new Vector(0, y, this.options.functionColor);
-        v.MagOptions.is = this.options.showVals;
-        v.drawPoint(ctx, [W / 2 + X, H / 2], this.yScale);
+        if(this.mode=='point'){
+          v.drawPoint(ctx, [W / 2 + X, H / 2], this.yScale);
+        }else if(this.mode=='fill'){
+          v.draw(ctx, [W / 2 + X, H / 2], this.yScale);
+        }
       }
       X++;
       if (X > W / 2) {

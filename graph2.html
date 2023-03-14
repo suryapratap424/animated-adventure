@@ -57,6 +57,10 @@
             <label for="ac">axis-color</label>
             <input type="color" name="" id="fc" value="#ff0000">
             <label for="fc">function-color</label>
+            <input type="checkbox" name="an" id="an">
+            <label for="an">animate</label>
+            <input type="checkbox" name="fi" id="fi">
+            <label for="fi">fill</label>
         </div>
     </div>
     <canvas id="canvas"></canvas>
@@ -77,6 +81,14 @@
     const xA = document.getElementById('xA');
     const yA = document.getElementById('yA');
     let f = document.getElementById('f')
+    console.log(Object.getOwnPropertyNames(Math))
+    let funs = Object.getOwnPropertyNames(Math)
+    let value = () => {
+        let v = f.value.toLowerCase()
+        funs.forEach(fun => v = v.replace(fun, 'Math.' + fun))
+        console.log(v);
+        return v
+    }
     var options = {
         functionColor: fc.value,
         axisColor: ac.value,
@@ -85,11 +97,11 @@
     console.log(fc, ac, bc);
     // let g = new DescreteGraph(ctx, options);
     let g = new ContinuousGraph(ctx, options);
-    g.drawGrid(ctx, 10, 5);
-    g.drawAxis(ctx, 10, 5);
+    g.drawGrid(ctx, xA.value, yA.value);
+    g.drawAxis(ctx, xA.value, yA.value);
     g.drawfunction(ctx, '1');
 
-    [bc, ac, fc , xA, yA].forEach(e => {
+    [bc, ac, fc, xA, yA].forEach(e => {
         e.addEventListener('input', () => {
             let options = {
                 functionColor: fc.value,
@@ -101,19 +113,25 @@
             g = new ContinuousGraph(ctx, options)
             g.drawGrid(ctx, xA.value, yA.value)
             g.drawAxis(ctx, xA.value, yA.value)
-            g.drawfunction(ctx, f.value ? f.value : '1')
+            draw(g)
         })
     })
     document.getElementById('button').addEventListener('click', () => {
-        // let g = new Graph(ctx,options)
         g.clear(ctx)
         g.drawGrid(ctx, xA.value, yA.value)
         g.drawAxis(ctx, xA.value, yA.value)
-        // g.drawAxis(ctx)
-        // g.animatefunction(ctx,'x',1)
-        // g.animatefunction(ctx,'Math.pow(2.71,-Math.abs(x*x))');
-        g.animatefunction(ctx, f.value,10);
+        draw(g)
     })
+    function draw(g){
+        if (document.getElementById('fi').checked)
+            g.mode = 'fill'
+        else
+            g.mode = 'point'
+        if (document.getElementById('an').checked)
+            g.animatefunction(ctx, value() ? value() : '1', 10);
+        else
+            g.drawfunction(ctx, value() ? value() : '1');
+    }
 </script>
 
 </html>
