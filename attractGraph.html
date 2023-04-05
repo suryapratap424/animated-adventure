@@ -42,6 +42,13 @@
     const xA = document.getElementById('xA');
     const yA = document.getElementById('yA');
     const b = document.getElementById('button');
+    let funs = Object.getOwnPropertyNames(Math)
+    let value = () => {
+        let v = Y.value.toLowerCase()
+        funs.forEach(fun => v = v.replace(fun, 'Math.' + fun))
+        console.log(v);
+        return v
+    }
     b.addEventListener('click', () => {
         Y.oninput()
     })
@@ -61,7 +68,7 @@
         b.draw(ctx)
     }
     Y.oninput = () => {
-        let p = Graph.getPoints(ctx, Y.value, x, y)
+        let p = Graph.getPoints(ctx, value(), x, y)
         for (let i = 0; i < Ball.count; i++) {
             p[i][2] == 'error' ? Balls[i].color = 'red' : Balls[i].color = 'lightgreen'
             Balls[i].goto = new Vector(p[i][0], p[i][1])

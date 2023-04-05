@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pos vel acc </title>
+    <style>
+        * {
+            margin: 0;
+        }
+
+        #canvas {
+            background-color: black;
+        }
+        #control>*{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="control">
+
+    </div>
+</body>
+<script type="module">
+    import Vector from '../vector.js'
+    import Ball from '../ball.js'
+    import { Graph } from '../graph.js'
+    const c = document.getElementById('canvas');
+    let W = c.width = window.innerWidth;
+    let H = c.height = window.innerHeight * 3 / 4;
+    const ctx = c.getContext('2d');
+    let g = new Graph(ctx);
+    let [x, y] = [7, 10];
+    let [xF, yF] = [W / 2 / x, H / 2 / y]
+    let b = new Ball(5, new Vector(3 * xF, 4 * yF,'red'));
+    b.vel.color='yellow'
+    b.acc.color='lime'
+    b.controles(ctx).forEach(c => {
+        document.getElementById('control').appendChild(c)
+    })
+    function animate() {
+        ctx.clearRect(0, 0, W, H);
+        g.drawGrid(ctx, x, y)
+        g.drawAxis(ctx, x, y)
+        b.drawDetail(ctx)
+        setTimeout(() => {
+            window.requestAnimationFrame(animate);
+        }, 20);
+    }
+    window.requestAnimationFrame(animate);
+</script>
+
+</html>

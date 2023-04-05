@@ -99,51 +99,47 @@ export default class Ball {
       this.acc = r;
       this.acc.setMag(1);
     }
+    if (this.controle) {
+      this.update(false,ctx);
+    }
   }
   drawDetail(ctx) {
     this.show(ctx);
     this.draw(ctx);
   }
   controles(ctx) {
-    let c = ["x", "y", "vx", "vy", "ax", "ay"];
-    let all = c.map((v) => {
+    this.controle = true;
+    let all = Object.keys(this).map((v) => {
       const W = ctx.canvas.clientWidth;
       const H = ctx.canvas.clientHeight;
       let div = document.createElement("div");
-      let lable = document.createElement("label");
-      let slider = document.createElement("input");
-      slider.id = v;
-      lable.htmlFor = v;
-      slider.type = "range";
-      if (v == "x") {
-        slider.value = ((this.pos.x + W / 2) * 100) / W;
-        lable.innerHTML += v + " = " + this.pos.x;
+      if (v == "pos" || v == "vel" || v == "acc") {
+        let lable = document.createElement("label");
+        let slider = document.createElement("input");
+        slider.id = v + "x";
+        lable.htmlFor = v + "x";
+        slider.type = "range";
+        slider.max= 100
+        slider.value = ((this[v].x + W / 2) * 100) / W;
+        lable.innerHTML += v + "x = " + this[v].x.toFixed(1);
+        slider.addEventListener("input", (e) => {
+          this.update(slider, ctx, lable);
+        });
+        div.appendChild(lable);
+        div.appendChild(slider);
+        let lable2 = document.createElement("label");
+        let slider2 = document.createElement("input");
+        slider2.id = v + "y";
+        lable2.htmlFor = v + "y";
+        slider2.type = "range";
+        slider2.value = ((-this[v].y + H / 2) * 100) / H;
+        lable2.innerHTML += v + "y = " + (-this[v].y).toFixed(1);
+        slider2.addEventListener("input", (e) => {
+          this.update(slider2, ctx, lable2);
+        });
+        div.appendChild(lable2);
+        div.appendChild(slider2);
       }
-      if (v == "y") {
-        slider.value = ((-this.pos.y + H / 2) * 100) / H;
-        lable.innerHTML += v + " = " + -this.pos.y;
-      }
-      if (v == "vx") {
-        slider.value = ((this.vel.x + W / 2) * 100) / W;
-        lable.innerHTML += v + " = " + this.vel.x;
-      }
-      if (v == "vy") {
-        slider.value = ((-this.vel.y + H / 2) * 100) / H;
-        lable.innerHTML += v + " = " + -this.vel.y;
-      }
-      if (v == "ax") {
-        slider.value = ((this.acc.x + W / 2) * 100) / W;
-        lable.innerHTML += v + " = " + this.acc.x;
-      }
-      if (v == "ay") {
-        slider.value = ((-this.acc.y + H / 2) * 100) / H;
-        lable.innerHTML += v + " = " + -this.acc.y;
-      }
-      slider.addEventListener("input", (e) => {
-        this.update(slider, ctx, lable);
-      });
-      div.appendChild(lable);
-      div.appendChild(slider);
       return div;
     });
     return all;
@@ -151,31 +147,29 @@ export default class Ball {
   update(e, ctx, lable) {
     const W = ctx.canvas.clientWidth;
     const H = ctx.canvas.clientHeight;
-    if (e.id == "x") {
-      this.pos.x = (W * e.value) / 100 - W / 2;
-      lable.innerHTML = e.id + " = " + this.pos.x;
+    if (e) {
+      let X = e.id.slice(-1) == "x" ? W : -H;
+      this[e.id.slice(0, 3)][e.id.slice(-1)] = (X * e.value) / 100 - X / 2;
+      lable.innerHTML =
+        e.id +
+        " = " +
+        (X == W ? 1 : -1) * this[e.id.slice(0, 3)][e.id.slice(-1)].toFixed(1);
     }
-    if (e.id == "y") {
-      this.pos.y = -((H * e.value) / 100 - H / 2);
-      lable.innerHTML = e.id + " = " + -this.pos.y;
-    }
-    if (e.id == "vx") {
-      this.vel.x = (W * e.value) / 100 - W / 2;
-      lable.innerHTML = e.id + " = " + this.vel.x;
-    }
-    if (e.id == "vy") {
-      this.vel.y = -((H * e.value) / 100 - H / 2);
-      lable.innerHTML = e.id + " = " + -this.vel.y;
-    }
-    if (e.id == "ax") {
-      this.acc.x = (W * e.value) / 100 - W / 2;
-      lable.innerHTML = e.id + " = " + this.acc.x;
-    }
-    if (e.id == "ay") {
-      this.acc.y = -((H * e.value) / 100 - H / 2);
-      lable.innerHTML = e.id + " = " + -this.acc.y;
-    }
-    ctx.clearRect(0, 0, W, H);
-    this.show(ctx);
+    Object.keys(this).forEach((v) => {
+      if (v == "pos" || v == "vel" || v == "acc") {
+        if (e || v + "x" != e.id) {
+          let a = ((this[v].x + W / 2) * 100) / W;
+          document.getElementById(v + "x").value = a;
+          document.querySelector(`label[for=${v + "x"}]`).innerHTML =
+            v + "x = " + this[v].x.toFixed(1);
+        }
+        if (e || v + "y" != e.id) {
+          let a = -((this[v].y - H / 2) * 100) / H;
+          document.getElementById(v + "y").value = a;
+          document.querySelector(`label[for=${v + "y"}]`).innerHTML =
+            v + "y = " + -this[v].y.toFixed(1);
+        }
+      }
+    });
   }
 }

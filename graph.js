@@ -22,7 +22,7 @@ class Graph {
     this.origin = [W / 2, H / 2];
     ctx.fillStyle = this.options.backgroundColor;
     ctx.fillRect(0, 0, W, H);
-    // console.log(this.options);
+    console.log(this.options);
   }
   drawAxis(ctx, x = 10, y = 10) {
     let O = this.origin;
@@ -44,7 +44,7 @@ class Graph {
     for (let i = 0; i < W; i += this.xScale) {
       new Vector(0, H, "#202124").draw(ctx, [i, H], this.xScale);
     }
-    for (let i = 0; i < W; i += this.yScale) {
+    for (let i = 0; i < H; i += this.yScale) {
       new Vector(W, 0, "#202124").draw(ctx, [0, i], this.yScale);
     }
   }
