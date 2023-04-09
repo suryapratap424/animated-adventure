@@ -76,6 +76,12 @@
 
 <body>
     <div>
+        <input type="text" id="inp" placeholder="Type your input function of 'x' here">
+        <input type="range" name="" id="xA" value="10">
+        <label for="xA">X-axis</label>
+        <input type="range" name="" id="yA" value="10">
+        <label for="yA">Y-axis</label>
+        <button id="button">Resettel</button>
         <span>
             ** operator denotes exponantiation
             <hr>
@@ -90,15 +96,10 @@
             <button class="example">abs(x)</button>
             <button class="example">abs(cos(x))</button>
             <button class="example">2**x</button>
+            <button class="example">2.71**-abs(x*x)</button>
             <hr>
             use X-axis and Y-axis to tweak the graph and hit Resettel button to rearrange balls
         </span>
-        <input type="text" id="inp" placeholder="Type your input function of 'x' here">
-        <input type="range" name="" id="xA" value="10">
-        <label for="xA">X-axis</label>
-        <input type="range" name="" id="yA" value="10">
-        <label for="yA">Y-axis</label>
-        <button id="button">Resettel</button>
     </div>
     <canvas id="canvas"></canvas>
 </body>

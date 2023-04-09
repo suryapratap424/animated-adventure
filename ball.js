@@ -100,7 +100,7 @@ export default class Ball {
       this.acc.setMag(1);
     }
     if (this.controle) {
-      this.update(false,ctx);
+      this.update(false, ctx);
     }
   }
   drawDetail(ctx) {
@@ -109,37 +109,34 @@ export default class Ball {
   }
   controles(ctx) {
     this.controle = true;
-    let all = Object.keys(this).map((v) => {
+    let all = ["pos", "vel", "acc"].map((v) => {
       const W = ctx.canvas.clientWidth;
       const H = ctx.canvas.clientHeight;
       let div = document.createElement("div");
-      if (v == "pos" || v == "vel" || v == "acc") {
-        let lable = document.createElement("label");
-        let slider = document.createElement("input");
-        slider.id = v + "x";
-        lable.htmlFor = v + "x";
-        slider.type = "range";
-        slider.max= 100
-        slider.value = ((this[v].x + W / 2) * 100) / W;
-        lable.innerHTML += v + "x = " + this[v].x.toFixed(1);
-        slider.addEventListener("input", (e) => {
-          this.update(slider, ctx, lable);
-        });
-        div.appendChild(lable);
-        div.appendChild(slider);
-        let lable2 = document.createElement("label");
-        let slider2 = document.createElement("input");
-        slider2.id = v + "y";
-        lable2.htmlFor = v + "y";
-        slider2.type = "range";
-        slider2.value = ((-this[v].y + H / 2) * 100) / H;
-        lable2.innerHTML += v + "y = " + (-this[v].y).toFixed(1);
-        slider2.addEventListener("input", (e) => {
-          this.update(slider2, ctx, lable2);
-        });
-        div.appendChild(lable2);
-        div.appendChild(slider2);
-      }
+      let lable = document.createElement("label");
+      let slider = document.createElement("input");
+      slider.id = v + "x";
+      lable.htmlFor = v + "x";
+      slider.type = "range";
+      slider.value = ((this[v].x + W / 2) * 100) / W;
+      lable.innerHTML += v + "x = " + this[v].x.toFixed(1);
+      slider.addEventListener("input", () => {
+        this.update(slider, ctx, lable);
+      });
+      div.appendChild(lable);
+      div.appendChild(slider);
+      let lable2 = document.createElement("label");
+      let slider2 = document.createElement("input");
+      slider2.id = v + "y";
+      lable2.htmlFor = v + "y";
+      slider2.type = "range";
+      slider2.value = ((-this[v].y + H / 2) * 100) / H;
+      lable2.innerHTML += v + "y = " + (-this[v].y).toFixed(1);
+      slider2.addEventListener("input", () => {
+        this.update(slider2, ctx, lable2);
+      });
+      div.appendChild(lable2);
+      div.appendChild(slider2);
       return div;
     });
     return all;
@@ -155,20 +152,18 @@ export default class Ball {
         " = " +
         (X == W ? 1 : -1) * this[e.id.slice(0, 3)][e.id.slice(-1)].toFixed(1);
     }
-    Object.keys(this).forEach((v) => {
-      if (v == "pos" || v == "vel" || v == "acc") {
-        if (e || v + "x" != e.id) {
-          let a = ((this[v].x + W / 2) * 100) / W;
-          document.getElementById(v + "x").value = a;
-          document.querySelector(`label[for=${v + "x"}]`).innerHTML =
-            v + "x = " + this[v].x.toFixed(1);
-        }
-        if (e || v + "y" != e.id) {
-          let a = -((this[v].y - H / 2) * 100) / H;
-          document.getElementById(v + "y").value = a;
-          document.querySelector(`label[for=${v + "y"}]`).innerHTML =
-            v + "y = " + -this[v].y.toFixed(1);
-        }
+    ["pos", "vel", "acc"].forEach((v) => {
+      if (e || v + "x" != e.id) {
+        let a = ((this[v].x + W / 2) * 100) / W;
+        document.getElementById(v + "x").value = a;
+        document.querySelector(`label[for=${v + "x"}]`).innerHTML =
+          v + "x = " + this[v].x.toFixed(1);
+      }
+      if (e || v + "y" != e.id) {
+        let a = -((this[v].y - H / 2) * 100) / H;
+        document.getElementById(v + "y").value = a;
+        document.querySelector(`label[for=${v + "y"}]`).innerHTML =
+          v + "y = " + -this[v].y.toFixed(1);
       }
     });
   }
