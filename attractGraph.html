@@ -9,23 +9,97 @@
     <style>
         * {
             margin: 0;
+            padding: 0%;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-image: linear-gradient(red, blue);
+            display: flex;
+            overflow: hidden;
+            background-color: black;
+            color: white;
+        }
+
+        body>div {
+            display: flex;
+            flex-direction: column;
+            width: 25%;
+            border: 5px dotted white;
+        }
+
+        body>div>* {
+            margin: 1rem;
+            padding: 1rem;
+        }
+
+        input {
+            margin-bottom: 0 !important;
+        }
+
+        label {
+            margin-top: 0 !important;
         }
 
         #canvas {
             background-color: black;
+            width: 75vw;
+            height: 100vh;
+        }
+        .example{
+            cursor: pointer;
+        }
+        @media screen and (max-width: 992px) {
+            body {
+                flex-direction: column-reverse;
+                overflow: auto;
+            }
+
+            #canvas {
+                width: 100vw;
+                height: 50vh;
+            }
+
+            body>div {
+                width: 100%;
+                height: 50%;
+                border: 5px dotted white;
+            }
+
+            body>div>* {
+                margin: 0.2rem;
+                padding: 0.5rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <input type="text" id="inp">
-    <span>
+    <div>
+        <span>
+            ** operator denotes exponantiation
+            <hr>
+            abs() denotes absolute value
+            <hr>
+            try these functions =>
+            <button class="example"> sin(x)</button>
+            <button class="example">x</button>
+            <button class="example">log(x)</button>
+            <button class="example">x**x</button>
+            <button class="example">x**2</button>
+            <button class="example">abs(x)</button>
+            <button class="example">abs(cos(x))</button>
+            <button class="example">2**x</button>
+            <hr>
+            use X-axis and Y-axis to tweak the graph and hit Resettel button to rearrange balls
+        </span>
+        <input type="text" id="inp" placeholder="Type your input function of 'x' here">
         <input type="range" name="" id="xA" value="10">
         <label for="xA">X-axis</label>
         <input type="range" name="" id="yA" value="10">
         <label for="yA">Y-axis</label>
         <button id="button">Resettel</button>
-    </span>
+    </div>
     <canvas id="canvas"></canvas>
 </body>
 <script type="module">
@@ -33,8 +107,8 @@
     import Ball from './ball.js'
     import { Graph } from './graph.js'
     const c = document.getElementById('canvas');
-    let W = c.width = window.innerWidth;
-    let H = c.height = window.innerHeight;
+    let W = c.width = c.clientWidth
+    let H = c.height = c.clientHeight
     const ctx = c.getContext('2d');
     let Balls = [];
     let g = new Graph(ctx);
@@ -67,6 +141,7 @@
         Ball.resist = 1.05
         b.draw(ctx)
     }
+    Array.from(document.getElementsByClassName('example')).forEach(e=>e.addEventListener('click',()=>(Y.value=e.innerHTML)&&Y.oninput()))
     Y.oninput = () => {
         let p = Graph.getPoints(ctx, value(), x, y)
         for (let i = 0; i < Ball.count; i++) {
