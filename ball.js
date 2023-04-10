@@ -1,5 +1,10 @@
 import Vector from "./vector.js";
-
+function map(real_min, real_max, target_min, target_max, value) {
+  return (
+    target_min +
+    ((value - real_min) * (target_max - target_min)) / (real_max - real_min)
+  );
+}
 export default class Ball {
   goto = NaN;
   static target = NaN;
@@ -110,6 +115,9 @@ export default class Ball {
   controles(ctx) {
     this.controle = true;
     let all = ["pos", "vel", "acc"].map((v) => {
+      let factor = 2;
+      if (v == "vel") factor = 20;
+      if (v == "acc") factor = 80;
       const W = ctx.canvas.clientWidth;
       const H = ctx.canvas.clientHeight;
       let div = document.createElement("div");
@@ -118,7 +126,7 @@ export default class Ball {
       slider.id = v + "x";
       lable.htmlFor = v + "x";
       slider.type = "range";
-      slider.value = ((this[v].x + W / 2) * 100) / W;
+      slider.value = map(-W / factor, W / factor, 0, 100, this[v].x);
       lable.innerHTML += v + "x = " + this[v].x.toFixed(1);
       slider.addEventListener("input", () => {
         this.update(slider, ctx, lable);
@@ -130,7 +138,7 @@ export default class Ball {
       slider2.id = v + "y";
       lable2.htmlFor = v + "y";
       slider2.type = "range";
-      slider2.value = ((-this[v].y + H / 2) * 100) / H;
+      slider2.value = map(-H / factor, H / factor, 0, 100, -this[v].y);
       lable2.innerHTML += v + "y = " + (-this[v].y).toFixed(1);
       slider2.addEventListener("input", () => {
         this.update(slider2, ctx, lable2);
@@ -146,21 +154,26 @@ export default class Ball {
     const H = ctx.canvas.clientHeight;
     if (e) {
       let X = e.id.slice(-1) == "x" ? W : -H;
-      this[e.id.slice(0, 3)][e.id.slice(-1)] = (X * e.value) / 100 - X / 2;
+      let [a, b] = [e.id.slice(0, 3), e.id.slice(-1)];
+      let factor = 2;
+      if (a == "vel") factor = 20;
+      if (a == "acc") factor = 80;
+      this[a][b] = map(0, 100, -X / factor, X / factor, e.value);
       lable.innerHTML =
-        e.id +
-        " = " +
-        (X == W ? 1 : -1) * this[e.id.slice(0, 3)][e.id.slice(-1)].toFixed(1);
+        e.id + " = " + (X == W ? 1 : -1) * this[a][b].toFixed(1);
     }
     ["pos", "vel", "acc"].forEach((v) => {
+      let factor = 2;
+      if (v == "vel") factor = 20;
+      if (v == "acc") factor = 80;
       if (e || v + "x" != e.id) {
-        let a = ((this[v].x + W / 2) * 100) / W;
+        let a = map(-W / factor, W / factor, 0, 100, this[v].x);
         document.getElementById(v + "x").value = a;
         document.querySelector(`label[for=${v + "x"}]`).innerHTML =
           v + "x = " + this[v].x.toFixed(1);
       }
       if (e || v + "y" != e.id) {
-        let a = -((this[v].y - H / 2) * 100) / H;
+        let a = map(-H / factor, H / factor, 0, 100, -this[v].y);
         document.getElementById(v + "y").value = a;
         document.querySelector(`label[for=${v + "y"}]`).innerHTML =
           v + "y = " + -this[v].y.toFixed(1);
