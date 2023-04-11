@@ -11,7 +11,7 @@
             margin: 0;
         }
 
-        #canvas {
+        canvas {
             background-color: black;
         }
         #control>*{
@@ -26,11 +26,18 @@
     <div id="control">
 
     </div>
+    <canvas id="pos_x"></canvas>
+    <canvas id="pos_y"></canvas>
+    <canvas id="vel_x"></canvas>
+    <canvas id="vel_y"></canvas>
+    <canvas id="acc_x"></canvas>
+    <canvas id="acc_y"></canvas>
 </body>
 <script type="module">
     import Vector from '../vector.js'
     import Ball from '../ball.js'
     import { Graph } from '../graph.js'
+    // ---------------------main graph
     const c = document.getElementById('canvas');
     let W = c.width = window.innerWidth;
     let H = c.height = window.innerHeight * 3 / 4;
@@ -38,17 +45,49 @@
     let g = new Graph(ctx);
     let [x, y] = [7, 10];
     let [xF, yF] = [W / 2 / x, H / 2 / y]
-    let b = new Ball(5, new Vector(3 * xF, 4 * yF,'red'));
+    let b = new Ball(5, new Vector(x * xF, y * yF,'red'));
     b.vel.color='yellow'
     b.acc.color='lime'
     b.controles(ctx).forEach(c => {
         document.getElementById('control').appendChild(c)
     })
+    // ---------------------main graph
+    // ---------------------pos graph
+    let p = document.getElementById('pos_x')
+    const pos_x_ctx = p.getContext('2d');
+    let pos_x=new Graph(pos_x_ctx);
+    //--------------------------------
+    p = document.getElementById('pos_y')
+    const pos_y_ctx = p.getContext('2d');
+    let pos_y=new Graph(pos_y_ctx);
+    //--------------------------------
+    p = document.getElementById('vel_x')
+    const vel_x_ctx = p.getContext('2d');
+    let vel_x=new Graph(vel_x_ctx);
+    //--------------------------------
+    p = document.getElementById('vel_y')
+    const vel_y_ctx = p.getContext('2d');
+    let vel_y=new Graph(vel_y_ctx);
+    //--------------------------------
+    p = document.getElementById('acc_x')
+    const acc_x_ctx = p.getContext('2d');
+    let acc_x=new Graph(acc_x_ctx);
+    //--------------------------------
+    p = document.getElementById('acc_y')
+    const acc_y_ctx = p.getContext('2d');
+    let acc_y=new Graph(acc_y_ctx);
+    // ---------------------pos graph
     function animate() {
         ctx.clearRect(0, 0, W, H);
         g.drawGrid(ctx, x, y)
         g.drawAxis(ctx, x, y)
         b.drawDetail(ctx)
+        pos_x.draw(pos_x_ctx,b.pos.x)
+        pos_y.draw(pos_y_ctx,-b.pos.y)
+        vel_x.draw(vel_x_ctx,b.vel.x)
+        vel_x.draw(vel_y_ctx,-b.vel.y)
+        acc_x.draw(acc_x_ctx,b.acc.x)
+        acc_x.draw(acc_y_ctx,-b.acc.y)
         setTimeout(() => {
             window.requestAnimationFrame(animate);
         }, 20);

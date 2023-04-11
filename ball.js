@@ -31,7 +31,7 @@ export default class Ball {
     this.pos = pos;
     this.vel = vel;
     this.acc = acc;
-    this.pos.mode = "arrow";
+    // this.pos.mode = "arrow";
     this.vel.mode = "arrow";
     // this.vel.MagOptions.is=true
     this.acc.mode = "arrow";
@@ -46,7 +46,7 @@ export default class Ball {
     this.pos.draw(ctx, [a, b]);
     this.vel.draw(ctx, this.pos.tip(), 4);
     // console.log(this.vel);
-    this.acc.draw(ctx, this.pos.tip(), 10);
+    this.acc.draw(ctx, this.pos.tip(), 20);
     ctx.stroke();
     ctx.beginPath();
     ctx.fillStyle = this.color;
