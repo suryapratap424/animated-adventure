@@ -16,7 +16,7 @@
             display: flex;
             flex-direction: row-reverse;
         }
-        body>*{
+        #canvas{
             width: 50vw;
             height: 100vh;
         }
@@ -42,6 +42,15 @@
         #graphs canvas {
             width: 100%;
             border: 2px double white;
+        }
+        @media screen and (max-width: 500px) {
+            body{
+                flex-direction: column;
+            }
+            #canvas{
+                width: 100%;
+                height: 50vh;
+            }
         }
     </style>
 </head>
@@ -72,7 +81,7 @@
     let g = new Graph(ctx);
     let [x, y] = [7, 10];
     let [xF, yF] = [W / 2 / x, H / 2 / y]
-    let b = new Ball(5, new Vector(x * xF, y * yF, 'red'));
+    let b = new Ball(5, new Vector(5 * xF, 8 * yF, 'red'));
     b.vel.color = 'yellow'
     b.acc.color = 'lime'
     b.controles(ctx).forEach(c => {
