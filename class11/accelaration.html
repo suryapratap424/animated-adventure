@@ -64,15 +64,14 @@
 <body>
     <canvas id="canvas"></canvas>
     <div id="graphs">
-        <div id="control">
-
-        </div>
-        <canvas id="pos_x"></canvas>
-        <canvas id="pos_y"></canvas>
-        <canvas id="vel_x"></canvas>
-        <canvas id="vel_y"></canvas>
+        <input type="text" id="ax" placeholder="Accelaraton in x">
+        <input type="text" id="ay" placeholder="Accelaraton in y">
         <canvas id="acc_x"></canvas>
         <canvas id="acc_y"></canvas>
+        <canvas id="vel_x"></canvas>
+        <canvas id="vel_y"></canvas>
+        <canvas id="pos_x"></canvas>
+        <canvas id="pos_y"></canvas>
     </div>
 </body>
 <script type="module">
@@ -87,12 +86,8 @@
     let g = new Graph(ctx);
     let [x, y] = [7, 10];
     let [xF, yF] = [W / 2 / x, H / 2 / y]
-    let b = new Ball(5, new Vector(5 * xF, 8 * yF, 'red'));
-    b.vel.color = 'yellow'
-    b.acc.color = 'lime'
-    b.controles(ctx).forEach(c => {
-        document.getElementById('control').appendChild(c)
-    })
+    let b = new Ball(5);
+    b.isBound=false
     // ---------------------main graph
     // ---------------------pos graph
     let p = document.getElementById('pos_x')
@@ -124,12 +119,17 @@
     p.width = p.clientWidth
     const acc_y_ctx = p.getContext('2d');
     let acc_y = new Graph(acc_y_ctx);
-    // ---------------------pos graph
+    // --------------------------------
+    let t = 0;
     function animate() {
         ctx.clearRect(0, 0, W, H);
         g.drawGrid(ctx, x, y)
         g.drawAxis(ctx, x, y)
         b.drawDetail(ctx)
+        b.pos = new Vector(100*Math.cos(t/10),100*Math.sin(t/10),'red')
+        b.vel = new Vector(-10*Math.sin(t/10),10*Math.cos(t/10),'blue')
+        b.acc = new Vector(-Math.cos(t/10),-Math.sin(t/10),'yellow')
+        t++;
         pos_x.draw(pos_x_ctx, b.pos.x)
         pos_y.draw(pos_y_ctx, -b.pos.y)
         vel_x.draw(vel_x_ctx, b.vel.x)
