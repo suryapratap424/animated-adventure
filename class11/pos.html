@@ -73,8 +73,8 @@
 <body>
     <canvas id="canvas"></canvas>
     <div id="graphs">
-        <input type="text" id="ax" placeholder="Accelaraton in x">
-        <input type="text" id="ay" placeholder="Accelaraton in y">
+        <input type="text" id="px" placeholder="pos in x" value="Math.sin(t/10)*100">
+        <input type="text" id="py" placeholder="pos in y" value="Math.cos(t/10)*100">
         <button id="start">start</button>
         <canvas id="acc_x"></canvas>
         <canvas id="acc_y"></canvas>
@@ -97,7 +97,7 @@
     let [x, y] = [7, 10];
     let [xF, yF] = [W / 2 / x, H / 2 / y]
     let b = new Ball(5);
-    b.vel.color='yellow'
+    b.vel.color = 'yellow'
     // b.isBound=false
     // ---------------------main graph
     // ---------------------pos graph
@@ -138,43 +138,64 @@
         console.log(v);
         return v
     }
-    let prev = b.pos.x;
-    function diff(curr) {
-        const D = (curr - prev)
-        prev = curr
-        console.log(D);
-        return D
-    }
     g.drawGrid(ctx, x, y)
     g.drawAxis(ctx, x, y)
     b.drawDetail(ctx)
     var req;
+    let prev_pos = new Vector();
+    let curr_pos = new Vector();
+    let prev_vel = new Vector();
+    let curr_vel = new Vector();
+    let v = new Vector();
     function animate() {
         ctx.clearRect(0, 0, W, H);
-        // g.drawGrid(ctx, x, y)
         g.drawAxis(ctx, x, y)
         b.drawDetail(ctx)
-        let px = eval(document.getElementById('ax').value)
-        if (!isNaN(px) && typeof px === "number") {
-            t += 1;
-            b.pos = new Vector(px, 0, 'red')
+        let px = eval(document.getElementById('px').value)
+        let py = eval(document.getElementById('py').value)
+        px = (!isNaN(px) && typeof px === "number") ? px : 0;
+        py = (!isNaN(py) && typeof py === "number") ? py : 0;
+        //calculation of vel and acc
+        t += 1;
+        if (t == 0) {
+            prev_pos = b.pos;
+            prev_vel = v;
         }
-        else
-            b.pos = new Vector(0, 0, 'red')
-        // if(ax)
-        // b.vel = new Vector(-10*Math.sin(t/10),10*Math.cos(t/10),'blue')
-        // b.acc = new Vector(-Math.cos(t/10),-Math.sin(t/10),'yellow')
-        pos_x.draw(pos_x_ctx, b.pos.x)
-        pos_y.draw(pos_y_ctx, -b.pos.y)
-        vel_x.draw(vel_x_ctx, 10*diff(b.pos.x))
-        vel_y.draw(vel_y_ctx, -b.vel.y)
-        acc_x.draw(acc_x_ctx, b.acc.x)
-        acc_y.draw(acc_y_ctx, -b.acc.y)
-        setTimeout(() => {
-            req = window.requestAnimationFrame(animate);
-            if (s.innerHTML == 'start')
-                cancelAnimationFrame(req)
-        }, 20);
+        else if (t == 1) {
+            curr_pos = b.pos;
+            curr_vel = v;
+        } else {
+            prev_pos = curr_pos;
+            curr_pos = b.pos;
+            prev_vel = curr_vel;
+            curr_vel = v;
+        }
+        v = Vector.subtract(curr_pos, prev_pos)
+        v.color = 'yellow'
+        v.draw(ctx, b.pos.tip(), 10)
+        //---------------------------
+        let a = Vector.subtract(curr_vel, prev_vel)
+        a.color = 'green'
+        a.draw(ctx, b.pos.tip(), 50)
+        //calculation of vel and acc
+
+        b.pos = new Vector(px, py, 'red')
+
+        // drawing
+        pos_x.draw(pos_x_ctx, b.pos.x*10)
+        pos_y.draw(pos_y_ctx, -b.pos.y*10)
+        vel_x.draw(vel_x_ctx, v.x)
+        vel_y.draw(vel_y_ctx, -v.y)
+        acc_x.draw(acc_x_ctx, a.x)
+        acc_y.draw(acc_y_ctx, -a.y)
+        // drawing
+        req = window.requestAnimationFrame(animate);
+        if (s.innerHTML == 'start')
+            cancelAnimationFrame(req)
+        if (b.pos.x > W / 2 || b.pos.x < -W / 2 || b.pos.y < -H / 2 || b.pos.y > H / 2) {
+            t = 0;
+            b.pos = new Vector()
+        }
     }
     // window.requestAnimationFrame(animate);
     let s = document.getElementById('start')
