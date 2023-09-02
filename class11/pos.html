@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>pos vel acc </title>
+    <title>r(t)</title>
     <style>
         * {
             margin: 0;
@@ -73,8 +73,8 @@
 <body>
     <canvas id="canvas"></canvas>
     <div id="graphs">
-        <input type="text" id="px" placeholder="pos in x" value="Math.sin(t/10)*100">
-        <input type="text" id="py" placeholder="pos in y" value="Math.cos(t/10)*100">
+        <input type="text" id="px" placeholder="pos in x">
+        <input type="text" id="py" placeholder="pos in y">
         <button id="start">start</button>
         <canvas id="acc_x"></canvas>
         <canvas id="acc_y"></canvas>
@@ -155,7 +155,7 @@
         let py = eval(document.getElementById('py').value)
         px = (!isNaN(px) && typeof px === "number") ? px : 0;
         py = (!isNaN(py) && typeof py === "number") ? py : 0;
-        //calculation of vel and acc
+        //calculation of vel
         t += 1;
         if (t == 0) {
             prev_pos = b.pos;
@@ -172,11 +172,11 @@
         }
         v = Vector.subtract(curr_pos, prev_pos)
         v.color = 'yellow'
-        v.draw(ctx, b.pos.tip(), 10)
+        v.draw(ctx, b.pos.tip(), 100)
         //---------------------------
         let a = Vector.subtract(curr_vel, prev_vel)
-        a.color = 'green'
-        a.draw(ctx, b.pos.tip(), 50)
+        a.color = 'orange'
+        a.draw(ctx, b.pos.tip(), 10000)
         //calculation of vel and acc
 
         b.pos = new Vector(px, py, 'red')
@@ -184,29 +184,32 @@
         // drawing
         pos_x.draw(pos_x_ctx, b.pos.x*10)
         pos_y.draw(pos_y_ctx, -b.pos.y*10)
-        vel_x.draw(vel_x_ctx, v.x)
-        vel_y.draw(vel_y_ctx, -v.y)
-        acc_x.draw(acc_x_ctx, a.x)
-        acc_y.draw(acc_y_ctx, -a.y)
+        vel_x.draw(vel_x_ctx, v.x*40)
+        vel_y.draw(vel_y_ctx, -v.y*40)
+        acc_x.draw(acc_x_ctx, a.x*500)
+        acc_y.draw(acc_y_ctx, -a.y*500)
         // drawing
         req = window.requestAnimationFrame(animate);
         if (s.innerHTML == 'start')
             cancelAnimationFrame(req)
         if (b.pos.x > W / 2 || b.pos.x < -W / 2 || b.pos.y < -H / 2 || b.pos.y > H / 2) {
             t = 0;
-            b.pos = new Vector()
+            b.pos = prev_pos = prev_vel = curr_pos = curr_vel =new Vector();
         }
     }
     // window.requestAnimationFrame(animate);
     let s = document.getElementById('start')
-    s.addEventListener('click', (e) => {
-        if (s.innerHTML == 'start') {
+    s.addEventListener('click', (e) => handleanimation(s.innerHTML))
+    document.getElementById('px').addEventListener("focus", (e) => handleanimation('stop'))
+    document.getElementById('py').addEventListener("focus", (e) => handleanimation('stop'))
+    function handleanimation(c) {
+        if (c == 'start') {
             req = window.requestAnimationFrame(animate);
             document.getElementById('start').innerHTML = 'stop'
         } else {
             document.getElementById('start').innerHTML = 'start'
         }
-    })
+    }
 </script>
 
 </html>
