@@ -23,6 +23,7 @@
     <canvas id="canvas"></canvas>
 </body>
 <script type="module">
+
     import Vector from '../lib/vector.js'
     import Ball from '../lib/ball.js'
     const c = document.getElementById('canvas');
@@ -35,14 +36,16 @@
     let sections = 15;
     let Xinterval = W / sections;
     let Yinterval = H / sections;
-    let min = Math.min(Xinterval,Yinterval);
+    let min = Math.min(Xinterval, Yinterval);
     function drawVectors() {
         for (let i = 0; i < W; i += Xinterval) {
             for (let j = 0; j < H; j += Yinterval) {
-                let v = new Vector(W / 2 - i, -H / 2 + j);
-                v = Vector.add(b.pos, v);
-                v.setMag(min/2);
+                let v = new Vector(-W / 2 + i, H / 2 - j);
+                v = Vector.subtract(v, b.pos);
+                v.weight = Math.min(20000/(v.mag()**2),40);
+                v.setMag(min / 2);
                 v.color = 'yellow'
+                v.mode = 'arrow'
                 v.draw(ctx, [i, j]);
             }
         }
