@@ -13,7 +13,7 @@
         }
 
         #canvas {
-            background-color: rgb(0, 0, 0);
+            background-color: rgb(255, 254, 202);
             overflow: hidden;
         }
     </style>
@@ -21,6 +21,10 @@
 
 <body>
     <canvas id="canvas"></canvas>
+    <div style="position: absolute; top: 0%; right: 0%; padding: 1rem; background-color: red;">
+        <input type="radio" name="mode" id="color">
+        <input type="radio" name="mode" id="weight" checked>
+    </div>
 </body>
 <script type="module">
 
@@ -42,9 +46,14 @@
             for (let j = 0; j < H; j += Yinterval) {
                 let v = new Vector(-W / 2 + i, H / 2 - j);
                 v = Vector.subtract(v, b.pos);
-                v.weight = Math.min(20000/(v.mag()**2),40);
+                const E = Math.min(20000 / (v.mag() ** 2), 30)
+                if(document.querySelector('input[name="mode"]:checked').id=='color'){
+                    v.color = toColor(E)
+                } else{
+                    v.color = 'blue'
+                    v.weight = E;
+                }
                 v.setMag(min / 2);
-                v.color = 'yellow'
                 v.mode = 'arrow'
                 v.draw(ctx, [i, j]);
             }
@@ -59,6 +68,23 @@
         drawVectors();
         b.draw(ctx)
     })
+    
+    //--------------------------
+    function toColor(num) {
+        num >>>= 0;
+        var b = map(0,30,0,255,Math.abs((30-num))),
+            g = map(0,30,0,255,Math.abs(15-num)),
+            r = map(0,30,0,255,num);
+            console.log(r,g,b);
+        return "rgb(" + [r, g, b].join(",") + ")";
+    }
+
+    function map(real_min, real_max, target_min, target_max, value) {
+        return (
+            target_min +
+            ((value - real_min) * (target_max - target_min)) / (real_max - real_min)
+        );
+    }
 </script>
 
 </html>
