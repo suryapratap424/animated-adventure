@@ -15,6 +15,8 @@
         #canvas{
             background-color: black;
             overflow: hidden;
+            width: 100%;
+            height: 100vh;
         }
     </style>
 </head>
@@ -26,9 +28,9 @@
     import Vector from '../lib/vector.js'
     import Ball from '../lib/ball.js'
     const c = document.getElementById('canvas');
-    let W= c.width = window.innerWidth
-    let H =c.height = window.innerHeight
-    console.log(window.innerWidth);
+    let W = c.width = c.clientWidth
+    let H = c.height = c.clientHeight
+    // console.log(window.innerWidth);
     const ctx = c.getContext('2d');
     let Balls = []
     for (let i = 0; i < 50; i++) {

@@ -34,10 +34,19 @@
         }
 
         #color {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            /* width: 200px; */
+            display: flex;
             align-items: center;
             justify-content: center;
+        }
+        label{
+            padding: 1rem;
+        }
+        input[type='checkbox']{
+            display: none;
+        }
+        input[type='checkbox']:checked+label{
+            background-color: blue;
         }
     </style>
 </head>

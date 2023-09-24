@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E field</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0%;
+            box-sizing: border-box;
+        }
+
+        #canvas {
+            background-color: rgb(0, 0, 0);
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+</body>
+<script type="module">
+    import Vector from '../lib/vector.js'
+    import Ball from '../lib/ball.js'
+    const c = document.getElementById('canvas');
+    let W = c.width = window.innerWidth
+    let H = c.height = window.innerHeight
+    const ctx = c.getContext('2d');
+    let b = new Ball(5, new Vector(100, 200))
+    b.color = 'red'
+    b.draw(ctx)
+    let sections = 15;
+    let Xinterval = W / sections;
+    let Yinterval = H / sections;
+    let min = Math.min(Xinterval,Yinterval);
+    function drawVectors() {
+        for (let i = 0; i < W; i += Xinterval) {
+            for (let j = 0; j < H; j += Yinterval) {
+                let v = new Vector(W / 2 - i, -H / 2 + j);
+                v = Vector.add(b.pos, v);
+                v.setMag(min/2);
+                v.color = 'yellow'
+                v.draw(ctx, [i, j]);
+            }
+        }
+    }
+    drawVectors();
+    let Cpos
+    c.addEventListener('mousemove', e => {
+        ctx.clearRect(0, 0, W, H);
+        Cpos = new Vector(e.offsetX - W / 2, -e.offsetY + H / 2, 'grey')
+        b.pos = Cpos
+        drawVectors();
+        b.draw(ctx)
+    })
+</script>
+
+</html>
