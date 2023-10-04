@@ -46,14 +46,14 @@
             for (let j = 0; j < H; j += Yinterval) {
                 let v = new Vector(-W / 2 + i, H / 2 - j);
                 v = Vector.subtract(v, b.pos);
-                const E = Math.min(20000 / (v.mag() ** 2), 30)
+                const E = Math.min(900000 / (v.mag() ** 2), min)
                 if(document.querySelector('input[name="mode"]:checked').id=='color'){
                     v.color = toColor(E)
                 } else{
                     v.color = 'blue'
-                    v.weight = E;
+                    v.weight = E/10;
                 }
-                v.setMag(min / 2);
+                v.setMag(E);
                 v.mode = 'arrow'
                 v.draw(ctx, [i, j]);
             }
