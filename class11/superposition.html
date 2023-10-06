@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>superposition</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0%;
+            box-sizing: border-box;
+        }
+
+        #canvas {
+            background-color: rgb(255, 254, 202);
+            overflow: hidden;
+            height: 90vh;
+            width: 100vw;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="controles">
+        <input type="radio" name="charge" id="plus" checked>
+        <label for="plus">place + charge</label>
+        <input type="radio" name="charge" id="minus">
+        <label for="plus">place - charge</label>
+    </div>
+    <div style="position: absolute; top: 0%; right: 0%; padding: 1rem; background-color: red;">
+        <input type="radio" name="mode" id="color">
+        <input type="radio" name="mode" id="weight" checked>
+    </div>
+</body>
+<script type="module">
+
+    import Vector from '../lib/vector.js'
+    import Ball from '../lib/ball.js'
+    class Charge extends Ball {
+        charge = 0;
+    }
+    const c = document.getElementById('canvas');
+    let W = c.width = c.clientWidth
+    let H = c.height = c.clientHeight
+    const ctx = c.getContext('2d');
+    let b = new Charge(5, new Vector(0, 0))
+    b.color = 'red'
+    b.charge = 5;
+    b.draw(ctx);
+    let Balls = [b];
+    let sections = 15;
+    let Xinterval = W / sections;
+    let Yinterval = H / sections;
+    let min = Math.min(Xinterval, Yinterval);
+    function drawVectors() {
+        for (let i = 0; i < W; i += Xinterval) {
+            for (let j = 0; j < H; j += Yinterval) {
+                let E = calculateE(i, j);
+                if (document.querySelector('input[name="mode"]:checked').id == 'color') {
+                    // E.color = toColor(E.mag());
+                } else {
+                    E.color = 'grey'
+                    E.weight = (E.mag() / 10 > 10) ? 10 : E.mag() / 10;
+                }
+                E.setMag(min/2);
+                E.mode = 'arrow';
+                // console.log(E);
+                E.draw(ctx, [i, j]);
+            }
+        }
+    }
+    drawVectors();
+    let Cpos
+    c.addEventListener('mousemove', e => {
+        ctx.clearRect(0, 0, W, H);
+        Cpos = new Vector(e.offsetX - W / 2, -e.offsetY + H / 2, 'grey')
+        Balls[Balls.length - 1].pos = Cpos;
+        drawVectors();
+        drawBalls();
+    })
+    c.addEventListener('click', e => {
+        ctx.clearRect(0, 0, W, H);
+        Cpos = new Vector(e.offsetX - W / 2, -e.offsetY + H / 2, 'grey');
+        let b = new Charge(5, Cpos);
+        let ispositive = document.querySelector('input[name="charge"]:checked').id=='plus'
+        b.color = ispositive?'red':'blue'
+        b.charge = ispositive?5:-5;
+        Balls.push(b);
+        drawVectors();
+        drawBalls();
+    })
+    //---------------------------
+    function drawBalls() {
+        Balls.forEach(b => b.draw(ctx))
+    }
+    function calculateE(i, j) {
+        let v = new Vector(-W / 2 + i, H / 2 - j);
+        let TotalE = new Vector();
+        Balls.forEach(b => {
+            
+            let r = Vector.subtract(v, b.pos);
+            // let E = new Vector(1,1);
+            r.setMag(Math.min(90000*b.charge / (r.mag() ** 2), min));
+            TotalE.add(r);
+        })
+        // console.log(TotalE);
+        return TotalE;
+    }
+    document.getElementById('controles').addEventListener("click",e=>{
+        let v = (document.querySelector('input[name="charge"]:checked').id=='plus')?5:-5;
+        Balls[Balls.length - 1].charge = v;
+        Balls[Balls.length - 1].color = v>0?'red':'blue';
+    })
+    //--------------------------
+    function toColor(num) {
+        num >>>= 0;
+        var b = map(0, 30, 0, 255, Math.abs((30 - num))),
+            g = map(0, 30, 0, 255, Math.abs(15 - num)),
+            r = map(0, 30, 0, 255, num);
+        console.log(r, g, b);
+        return "rgb(" + [r, g, b].join(",") + ")";
+    }
+
+    function map(real_min, real_max, target_min, target_max, value) {
+        return (
+            target_min +
+            ((value - real_min) * (target_max - target_min)) / (real_max - real_min)
+        );
+    }
+</script>
+
+</html>

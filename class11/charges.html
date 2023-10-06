@@ -31,8 +31,8 @@
     import Vector from '../lib/vector.js'
     import Ball from '../lib/ball.js'
     const c = document.getElementById('canvas');
-    let W = c.width = window.innerWidth
-    let H = c.height = window.innerHeight
+    let W = c.width = c.clientWidth
+    let H = c.height = c.clientHeight
     const ctx = c.getContext('2d');
     let b = new Ball(5, new Vector(100, 200))
     b.color = 'red'
