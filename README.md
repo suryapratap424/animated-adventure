@@ -10,7 +10,11 @@ https://suryapratap424.github.io/animated-adventure/examples/wall.html
 https://suryapratap424.github.io/animated-adventure/examples/attractGraph.html
 https://suryapratap424.github.io/animated-adventure/examples/graph.html
 https://suryapratap424.github.io/animated-adventure/examples/graph2.html
-# Phasor(for later)
-https://suryapratap424.github.io/animated-adventure/examples/phasor.html
 # Class 11
 https://suryapratap424.github.io/animated-adventure/class11/kinematics.html
+https://suryapratap424.github.io/animated-adventure/class11/pos.html
+# Class 12
+https://suryapratap424.github.io/animated-adventure/class12/charges.html
+https://suryapratap424.github.io/animated-adventure/class12/superposition.html
+# Phasor(for later)
+https://suryapratap424.github.io/animated-adventure/examples/phasor.html
