@@ -58,16 +58,21 @@
         for (let i = 0; i < W; i += Xinterval) {
             for (let j = 0; j < H; j += Yinterval) {
                 let E = calculateE(i, j);
+                let l = 1;
+                if (E.mag() > min / 2)
+                    l = min / 2 / E.mag();
                 if (document.querySelector('input[name="mode"]:checked').id == 'color') {
                     // E.color = toColor(E.mag());
+                    E.MagOptions.is = true;
+                    E.MagOptions.direction = 'TAIL';
                 } else {
                     E.color = 'grey'
-                    E.weight = (E.mag() / 10 > 10) ? 10 : E.mag() / 10;
+                    E.weight = (E.mag() > 100) ? 10 : E.mag() / 10;
                 }
-                E.setMag(min/2);
+
                 E.mode = 'arrow';
                 // console.log(E);
-                E.draw(ctx, [i, j]);
+                E.draw(ctx, [i, j], l);
             }
         }
     }
@@ -84,9 +89,9 @@
         ctx.clearRect(0, 0, W, H);
         Cpos = new Vector(e.offsetX - W / 2, -e.offsetY + H / 2, 'grey');
         let b = new Charge(5, Cpos);
-        let ispositive = document.querySelector('input[name="charge"]:checked').id=='plus'
-        b.color = ispositive?'red':'blue'
-        b.charge = ispositive?5:-5;
+        let ispositive = document.querySelector('input[name="charge"]:checked').id == 'plus'
+        b.color = ispositive ? 'red' : 'blue'
+        b.charge = ispositive ? 5 : -5;
         Balls.push(b);
         drawVectors();
         drawBalls();
@@ -99,19 +104,21 @@
         let v = new Vector(-W / 2 + i, H / 2 - j);
         let TotalE = new Vector();
         Balls.forEach(b => {
-            
+
             let r = Vector.subtract(v, b.pos);
             // let E = new Vector(1,1);
-            r.setMag(Math.min(90000*b.charge / (r.mag() ** 2), min));
+            if (b.charge < 0)
+                r.mult(-1);
+            r.setMag(Math.min(Math.abs(9000 * b.charge / (r.mag() ** 2))));
             TotalE.add(r);
         })
         // console.log(TotalE);
         return TotalE;
     }
-    document.getElementById('controles').addEventListener("click",e=>{
-        let v = (document.querySelector('input[name="charge"]:checked').id=='plus')?5:-5;
+    document.getElementById('controles').addEventListener("click", e => {
+        let v = (document.querySelector('input[name="charge"]:checked').id == 'plus') ? 5 : -5;
         Balls[Balls.length - 1].charge = v;
-        Balls[Balls.length - 1].color = v>0?'red':'blue';
+        Balls[Balls.length - 1].color = v > 0 ? 'red' : 'blue';
     })
     //--------------------------
     function toColor(num) {
