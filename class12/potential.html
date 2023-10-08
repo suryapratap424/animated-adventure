@@ -63,6 +63,11 @@
                 let vMag = new Ball(Math.abs(V / 100), new Vector(-W / 2 + i, H / 2 - j));
                 vMag.color = V > 0 ? 'pink' : 'lightblue';
                 vMag.draw(ctx);
+            }
+        }
+        for (let i = 0; i < W; i += Xinterval) {
+            for (let j = 0; j < H; j += Yinterval) {
+                let V = calculateV(i, j);
                 if (document.querySelector('input[name="mode"]:checked').id == 'number') {
                     ctx.fillStyle = 'black';
                     ctx.fillText(V.toFixed(0), i, j, 50);
