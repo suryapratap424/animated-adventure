@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ohm Law</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0%;
+            box-sizing: border-box;
+        }
+
+        #container {
+            height: 90vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #canvas {
+            border: 2px solid black;
+            background-color: rgb(255, 254, 202);
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <canvas id="canvas"></canvas>
+        <span id="I"> current = 0</span>
+        <span id="N"> total_electrons = 0</span>
+    </div>
+    <div id="controles">
+        <input type="range" value="0" min="-10" max="10" name="Voltage" id="Voltage">
+        <label for="Voltage">V = <span id="V"></span></label>
+        <input type="range" value="400" min="0" max="400" name="length" id="length">
+        <label for="length">l = <span id="l"></span></label>
+        <input type="range" value="100" min="0" max="100" name="area" id="area">
+        <label for="area">A = <span id="A"></span></label>
+    </div>
+</body>
+<script type="module">
+
+    import Vector from '../lib/vector.js'
+    import Ball from '../lib/ball.js'
+    class Charge extends Ball {
+        charge = 0;
+    }
+    // Ball.resist=1.1;
+    let v = document.getElementById('Voltage')
+    let length = document.getElementById('length')
+    let area = document.getElementById('area')
+    const c = document.getElementById('canvas');
+    let ctx = c.getContext('2d');
+    let Balls = [];
+    let n,W,H;
+
+    function setWire(l, A ,v) {
+        let electron_per_unit_volume = 1;
+        n = electron_per_unit_volume * l * A / 100;
+        console.log(n);
+        W = c.width = l;
+        H = c.height = A;
+        Balls=[];
+        for (let i = 0; i < n; i++) {
+            let b = Charge.randomBall(ctx)
+            b.r = 2
+            b.acc = v == 0 ? new Vector() : new Vector(v / 10, 0);
+            b.color = 'red'
+            b.isBound = false;
+            b.charge = 5;
+            b.draw(ctx);
+            Balls.push(b)
+        }
+    }
+    v.addEventListener('change', SetEnv);
+    length.addEventListener('change', SetEnv);
+    area.addEventListener('change', SetEnv);
+    function SetEnv(){
+        document.getElementById('V').innerHTML = v.value;
+        document.getElementById('l').innerHTML = length.value;
+        document.getElementById('A').innerHTML = area.value;
+        setWire(length.value, area.value, v.value);
+    }
+    SetEnv();
+    function animate() {
+        ctx.clearRect(0, 0, W, H);
+        let total_velocity = new Vector()// current 0;
+        let tau = 0.01;// % probability that this ball will get a random velocity 
+        Balls.forEach(b => {
+
+            if (b.pos.x > W / 2 && b.vel.x > 0) b.pos.x = -W / 2
+            if (b.pos.x < -W / 2 && b.vel.x < 0) b.pos.x = W / 2
+            if (b.pos.y > H / 2) {
+                b.pos.y = H / 2
+                b.vel.y = -b.vel.y
+            }
+            if (b.pos.y < -H / 2) {
+                b.pos.y = -H / 2
+                b.vel.y = -b.vel.y
+            }
+            total_velocity.add(b.vel)
+
+            // logic that electron is hit by atom 
+            if (Math.random() < tau)
+                b.vel = Vector.randomVector(W / 50, H / 50);
+            //----------------------------------
+
+            b.draw(ctx)
+        });
+        document.getElementById('I').innerHTML = "current = " + Math.floor(total_velocity.mag() / n);
+        document.getElementById('N').innerHTML = "N = " + Balls.length;
+        setTimeout(() => {
+            window.requestAnimationFrame(animate);
+        }, 20);
+    }
+    window.requestAnimationFrame(animate);
+</script>
+
+</html>

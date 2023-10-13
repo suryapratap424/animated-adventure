@@ -108,12 +108,8 @@
         let TotalV = 0;
         Balls.forEach(b => {
             let r = Vector.subtract(v, b.pos);
-            // let E = new Vector(1,1);
-            // if (b.charge < 0)
-            //     r.mult(-1);
             TotalV += Math.min(9000 * b.charge / r.mag());
         })
-        // console.log(TotalE);
         return TotalV;
     }
     document.getElementById('controles').addEventListener("click", e => {
